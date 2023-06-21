@@ -2,6 +2,7 @@
 
 UMAP-Explorer is a comprehensive tool designed for high-dimensional cell morphology data analysis. Leveraging the power of UMAP (Uniform Manifold Approximation and Projection) for dimension reduction, this package provides a streamlined workflow for transforming complex morphological data into intuitive, two-dimensional representations. Further functionalities, including advanced clustering and detailed analytical tools, facilitate the extraction of meaningful insights from Cell Profiler data.
 
+![UMAP-Explorer Logo](./images/umap2.jpg)
 ## Features
 
 * **UMAP Embedding:** Reduce the dimensionality of your high-dimensional cell morphology data, making it easier to visualize and interpret.
