@@ -7,7 +7,7 @@ UMAP-Explorer is a comprehensive tool designed for high-dimensional cell morphol
 
 * **UMAP Embedding:** Reduce the dimensionality of your high-dimensional cell morphology data, making it easier to visualize and interpret.
 
-* **Clustering:** Apply clustering algorithms - HDBScan and Leiden clusterin - to identify distinct groups or patterns in your data.
+* **Clustering:** Apply clustering algorithms - HDBScan and Leiden clustering - to identify distinct groups or patterns in your data.
 
 * **Analysis Tools:** Use our analytical tools to delve deeper into the characteristics and structure of your data including cluster comparison by XGBoost/SHAP analysis, cluster extraction and re-embedding.
 
