@@ -43,7 +43,10 @@ class UE():
         self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
         if print_cols:
             print(self.data_cols)
-            
+    
+    def export_to_db(self, db, tablename, if_exist='fail'):
+        self.df.to_sql(tablename, self.df, if_exists=if_exist)
+    
     def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='eucliean'):
         self.embedder = umap.UMAP(
             n_neighbors=n_neighbors,
