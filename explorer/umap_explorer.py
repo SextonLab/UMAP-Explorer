@@ -15,7 +15,8 @@ import seaborn as sns
 
 class UE():
     def __init__(self):
-        self.data = None
+        self.df = pd.DataFrame
+        self.data_cols = "*"
         self.clusters_names = []
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
@@ -23,11 +24,21 @@ class UE():
         if filetype not in filetypes:
             raise ValueError("Invalid file type. Expected one of: %s" % filetypes)
         if filetype=='csv':
-            self.data = pd.read_csv(fileanme)
+            self.df = pd.read_csv(fileanme)
         elif fileanme =='db':
             query = f"SELECT {data_cols} FROM {tablen_name}"
+            self.data_cols = data_cols
             con = sqlite3.connect(fileanme)
-            self.data = pd.read_sql_query(query, con)
+            self.df = pd.read_sql_query(query, con)
             con.close()
         elif fileanme == 'excel':
-            self.data = pd.read_excel(fileanme, sheet_name=sheet_name)
+            self.df = pd.read_excel(fileanme, sheet_name=sheet_name)
+            
+    def get_data_columns(self, print_cols=False, dtype:str="float64", extra:str=""):
+        pattern = "ImageNumber|Location|Center|Execution_Time|Parent|Child|Metadata"
+        if len(extra) > 0:
+            pattern+= "|"+extra
+        meta_cols = self.df.columns[self.df.columns.str.contains(pat=pattern, flags=re.IGNORECASE)].tolist()
+        self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
+        if print_cols:
+            print(self.data_cols)
