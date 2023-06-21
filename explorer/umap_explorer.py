@@ -57,3 +57,16 @@ class UE():
             )
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
         self.df[['x','y']] = self.embedder.fit_transform(scaled)
+        
+    def plot(self, x='x', y='y', color_on='cond', save=None, fname='my_plot'):
+        ftypes = [None, 'svg', 'png']
+        if save not in ftypes:
+            raise ValueError("Invalid file type. Expected one of: %s" % ftypes)
+        ax = sns.scatterplot(data=self.df, x=x, y=y, hue=color_on)
+        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+        if save:
+            if save == 'both':
+                plt.savefig(".".join((fname,'svg')), format='svg')
+                plt.savefig(".".join((fname, 'png')), format='png')
+            else:
+                plt.savefig(".".join((fname, save)), format=save)
