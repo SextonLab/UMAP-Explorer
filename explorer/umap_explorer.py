@@ -18,6 +18,7 @@ class UE():
         self.df = pd.DataFrame
         self.data_cols = "*"
         self.clusters_names = []
+        self.embedder = None
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -42,3 +43,14 @@ class UE():
         self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
         if print_cols:
             print(self.data_cols)
+            
+    def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='eucliean'):
+        self.embedder = umap.UMAP(
+            n_neighbors=n_neighbors,
+            metric=metric,
+            min_dist=min_dist,
+            a=a, b=b,
+            random_state=69
+            )
+        scaled = StandardScaler().fit_transform(self.df[self.data_cols])
+        self.df[['x','y']] = self.embedder.fit_transform(scaled)
