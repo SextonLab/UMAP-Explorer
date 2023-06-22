@@ -44,8 +44,15 @@ class UE():
         if print_cols:
             print(self.data_cols)
     
-    def export_to_db(self, db, tablename, if_exist='fail'):
-        self.df.to_sql(tablename, self.df, if_exists=if_exist)
+    def export(self, filename:str):
+        if filename.endswith('csv'):
+            filename = filename+".csv"
+        self.df.to_csv(filename, index=False)
+    
+    def export_db(self, db, tablename, if_exist='fail'):
+        con = sqlite3.connect(db)
+        self.df.to_sql(tablename, self.df, con=con, if_exists=if_exist,)
+        con.close()
     
     def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='eucliean'):
         self.embedder = umap.UMAP(
@@ -70,3 +77,9 @@ class UE():
                 plt.savefig(".".join((fname, 'png')), format='png')
             else:
                 plt.savefig(".".join((fname, save)), format=save)
+    
+    def head(self):
+        self.df.head()
+    
+    def shape(self):
+        return self.df.shape
