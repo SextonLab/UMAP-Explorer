@@ -10,6 +10,11 @@ from sklearn.preprocessing import StandardScaler
 
 import umap
 
+import hdbscan
+
+import igraph as ig
+import leidenalg as la
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 
