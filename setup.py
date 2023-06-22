@@ -25,7 +25,7 @@ setup(
     author='bhalliga',
     author_email='bhalliga@med.umich.edu',
     license='MIT',
-    packages=['umapexplore'],
+    packages=['explorer'],
     entry_points = {
         # 'console_scripts' : []
     },
