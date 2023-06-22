@@ -35,10 +35,10 @@ class UE():
         elif fileanme == 'excel':
             self.df = pd.read_excel(fileanme, sheet_name=sheet_name)
             
-    def get_data_columns(self, print_cols=False, dtype:str="float64", extra:str=""):
+    def get_data_columns(self, print_cols=False, dtype:str="float64", extra=list):
         pattern = "ImageNumber|Location|Center|Execution_Time|Parent|Child|Metadata"
         if len(extra) > 0:
-            pattern+= "|"+extra
+            pattern+= "|".join(extra)
         meta_cols = self.df.columns[self.df.columns.str.contains(pat=pattern, flags=re.IGNORECASE)].tolist()
         self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
         if print_cols:
@@ -83,3 +83,6 @@ class UE():
     
     def shape(self):
         return self.df.shape
+    
+    def cluster(self, type=''):
+        print(type)
