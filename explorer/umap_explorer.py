@@ -24,6 +24,7 @@ class UE():
         self.data_cols = "*"
         self.clusters_names = []
         self.embedder = None
+        self.cluster = None
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -89,5 +90,10 @@ class UE():
     def shape(self):
         return self.df.shape
     
-    def cluster(self, type=''):
-        print(type)
+    def cluster(self, type='hdbscan'):
+        types = ['hdbscan']
+        if type not in types:
+            raise ValueError("Invaild cluster type, Expected one of: %s" % types)
+        if type == 'hdbscan':
+            self.cluster = hdbscan.HDBSCAN(min_cluster_size=5, gen_min_span_tree=True)
+            self.df['cluster'] = self.cluster.labels_
