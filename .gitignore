@@ -173,4 +173,4 @@ test_data/
 __pycache__/
 
 # test data
-.csv
+*.csv
