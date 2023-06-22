@@ -79,7 +79,7 @@ class UE():
                 plt.savefig(".".join((fname, save)), format=save)
     
     def head(self):
-        self.df.head()
+        return self.df.head()
     
     def shape(self):
         return self.df.shape
