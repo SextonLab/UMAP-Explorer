@@ -22,9 +22,7 @@ class UE():
     def __init__(self):
         self.df = pd.DataFrame
         self.data_cols = "*"
-        self.clusters_names = []
         self.embedder = None
-        self.cluster_algo = None
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -91,10 +89,16 @@ class UE():
         return self.df.shape
     
     def cluster(self, type='hdbscan', min_clusters=5):
-        types = ['hdbscan']
+        types = ['hdbscan', 'leiden']
         if type not in types:
             raise ValueError("Invaild cluster type, Expected one of: %s" % types)
         if type == 'hdbscan':
-            self.cluster_algo = hdbscan.HDBSCAN(min_cluster_size=min_clusters, gen_min_span_tree=True)
-            self.cluster_algo.fit(self.df[['x','y']])
-            self.df['cluster'] = self.cluster_algo.labels_
+            cluster_algo = hdbscan.HDBSCAN(min_cluster_size=min_clusters, gen_min_span_tree=True)
+            cluster_algo.fit(self.df[['x','y']])
+            self.df['cluster'] = cluster_algo.labels_
+        elif type == 'leiden':
+            data = self.df[['x','y']]
+            dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
+            graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
+            partition = la.find_partition(graph, la.ModularityVertexPartition)
+            self.df['cluster'] = partition.membership
