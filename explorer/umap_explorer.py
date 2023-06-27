@@ -63,7 +63,7 @@ class UE():
         self.df.to_sql(tablename, self.df, con=con, if_exists=if_exist,)
         con.close()
     
-    def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='eucliean'):
+    def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='euclidean'):
         self.embedder = umap.UMAP(
             n_neighbors=n_neighbors,
             metric=metric,
@@ -93,7 +93,7 @@ class UE():
     def shape(self):
         return self.df.shape
     
-    def cluster(self, type='hdbscan', min_clusters=5):
+    def cluster(self, type='leiden', min_clusters=5):
         types = ['hdbscan', 'leiden']
         if type not in types:
             raise ValueError("Invaild cluster type, Expected one of: %s" % types)
