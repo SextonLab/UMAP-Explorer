@@ -23,6 +23,7 @@ class UE():
         self.df = pd.DataFrame
         self.data_cols = "*"
         self.embedder = None
+        self.clusters = None
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -102,3 +103,4 @@ class UE():
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
             partition = la.find_partition(graph, la.ModularityVertexPartition)
             self.df['cluster'] = partition.membership
+            self.clusters = partition.membership
