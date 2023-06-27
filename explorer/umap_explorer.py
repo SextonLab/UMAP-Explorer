@@ -7,8 +7,11 @@ import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
 
 import umap
+import xgboost as xgb
 
 import hdbscan
 
@@ -23,7 +26,8 @@ class UE():
         self.df = pd.DataFrame
         self.data_cols = "*"
         self.embedder = None
-        self.clusters = None
+        self.cluster_labes = None
+        self.model = xgb.XGBRegressor(random_state=42)
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -103,4 +107,24 @@ class UE():
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
             partition = la.find_partition(graph, la.ModularityVertexPartition)
             self.df['cluster'] = partition.membership
-            self.clusters = partition.membership
+            self.cluster_labels = partition.membership
+    
+    def model(self, cluster_1, cluster_2):
+        if cluster_1 not in self.cluster_labels or cluster_2 not in self.cluster_labels:
+            raise ValueError("Invalid clusters, Expected two clusters of: %s" % self.cluster_labels)
+        scaler = StandardScaler()
+        dt = self.df.loc[self.df['cluster'].isin([cluster_1, cluster_2])]
+        dt['label'] = 0.0
+        dt.loc[dt['cluster']==cluster_2, 'label'] = 1.0
+        X = scaler.fit_transform(dt[self.data_cols])
+        y = dt.labels.values
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.33, random_state=42
+            )
+        self.model.fit(X_train, y_train)
+        preds = self.model.predict(X_test)
+        print(f"Model R2 Score: {r2_score(y_test, preds):.2f}")
+        print(f"Model MSE: {mean_squared_error(y_test, preds):.2f}")
+        # maybe put something here to accept or change cluster
+        scaled = scaler.fit_transform(self.df[self.data_cols])
+        self.df['score'] = self.model.predict(scaled)
