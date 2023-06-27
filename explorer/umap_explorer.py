@@ -27,7 +27,7 @@ class UE():
         self.data_cols = "*"
         self.embedder = None
         self.cluster_labes = None
-        self.model = xgb.XGBRegressor(random_state=42)
+        self.model = xgb.XGBRegressor()
     
     def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
@@ -102,14 +102,14 @@ class UE():
             cluster_algo.fit(self.df[['x','y']])
             self.df['cluster'] = cluster_algo.labels_
         elif type == 'leiden':
-            data = self.df[['x','y']]
+            data = self.df[['x','y']].values
             dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
             partition = la.find_partition(graph, la.ModularityVertexPartition)
             self.df['cluster'] = partition.membership
             self.cluster_labels = partition.membership
     
-    def model(self, cluster_1, cluster_2):
+    def gen_model(self, cluster_1, cluster_2):
         if cluster_1 not in self.cluster_labels or cluster_2 not in self.cluster_labels:
             raise ValueError("Invalid clusters, Expected two clusters of: %s" % self.cluster_labels)
         scaler = StandardScaler()
@@ -117,7 +117,7 @@ class UE():
         dt['label'] = 0.0
         dt.loc[dt['cluster']==cluster_2, 'label'] = 1.0
         X = scaler.fit_transform(dt[self.data_cols])
-        y = dt.labels.values
+        y = dt.label.values
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.33, random_state=42
             )
