@@ -101,21 +101,31 @@ class UE():
             cluster_algo = hdbscan.HDBSCAN(min_cluster_size=min_clusters, gen_min_span_tree=True)
             cluster_algo.fit(self.df[['x','y']])
             self.df['cluster'] = cluster_algo.labels_
+            self.cluster_labels = self.df['cluster'].unique().tolist()
+            self.cluster_labels.sort()
         elif type == 'leiden':
             data = self.df[['x','y']].values
             dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
             partition = la.find_partition(graph, la.ModularityVertexPartition)
             self.df['cluster'] = partition.membership
-            self.cluster_labels = partition.membership
+            self.cluster_labels = self.df['cluster'].unique().tolist()
+            self.cluster_labels.sort()
     
     def gen_model(self, cluster_1, cluster_2):
-        if cluster_1 not in self.cluster_labels or cluster_2 not in self.cluster_labels:
+        # convert to list if single cluster ids
+        if type(cluster_1) is not list: cluster_1 = [cluster_1]
+        if type(cluster_2) is not list: cluster_2 = [cluster_2]
+        
+        clus_1 = [clust in self.cluster_labels for clust in cluster_1]
+        clus_2 = [clust in self.cluster_labels for clust in cluster_2]
+        
+        if not all(clus_1) or not all(clus_2):
             raise ValueError("Invalid clusters, Expected two clusters of: %s" % self.cluster_labels)
         scaler = StandardScaler()
-        dt = self.df.loc[self.df['cluster'].isin([cluster_1, cluster_2])]
+        dt = self.df.loc[self.df['cluster'].isin(cluster_1+cluster_2)]
         dt['label'] = 0.0
-        dt.loc[dt['cluster']==cluster_2, 'label'] = 1.0
+        dt.loc[dt['cluster'].isin(cluster_2), 'label'] = 1.0
         X = scaler.fit_transform(dt[self.data_cols])
         y = dt.label.values
         X_train, X_test, y_train, y_test = train_test_split(
