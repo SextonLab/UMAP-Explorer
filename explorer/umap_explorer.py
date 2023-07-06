@@ -117,6 +117,10 @@ class UE():
         if type(cluster_1) is not list: cluster_1 = [cluster_1]
         if type(cluster_2) is not list: cluster_2 = [cluster_2]
         
+        # if cluster_2 value is rest, use all labels not in cluster_1
+        if 'rest' in cluster_2:
+            cluster_2 = list(set(self.cluster_labels)-set(cluster_1))
+        
         clus_1 = [clust in self.cluster_labels for clust in cluster_1]
         clus_2 = [clust in self.cluster_labels for clust in cluster_2]
         
@@ -125,7 +129,7 @@ class UE():
         scaler = StandardScaler()
         dt = self.df.loc[self.df['cluster'].isin(cluster_1+cluster_2)]
         dt['label'] = 0.0
-        dt.loc[dt['cluster'].isin(cluster_2), 'label'] = 1.0
+        dt.loc[dt['cluster'].isin(cluster_1), 'label'] = 1.0
         X = scaler.fit_transform(dt[self.data_cols])
         y = dt.label.values
         X_train, X_test, y_train, y_test = train_test_split(
