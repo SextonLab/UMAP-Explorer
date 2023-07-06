@@ -13,20 +13,27 @@ UMAP-Explorer is a comprehensive tool designed for high-dimensional cell morphol
 
 ## Installation
 
-```bash
-# Install UMAP-Explorer from GitHub
-pip install git+https://github.com/yourusername/UMAP-Explorer.git
+```
+git clone git@github.com:SextonLab/UMAP-Explorer.git
 
-import UMAP_Explorer as ue
+cd UMAP-Explorer
 
-# Load your data
-data = ue.load_data('path/to/your/data.csv')
+pip install -e .
+```
 
-# Perform UMAP embedding
-embedding = ue.umap(data)
+### Optional install directly from GitHub
+`pip install git+https://github.com/yourusername/UMAP-Explorer.git`
 
-# Perform clustering
-clusters = ue.cluster(embedding)
+## Running
 
-# Analyze the clusters
-analysis = ue.analyze(clusters)
+Example Workflow, notebook can be found in `notebooks`
+
+```
+import explorer as ue
+
+explore = ue.UE()
+
+explore.load_data('My_Expt.db', type='db', table_name='Per_Image')
+explore.get_data_columns()
+explore.embed()
+```
