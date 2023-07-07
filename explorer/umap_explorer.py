@@ -37,6 +37,7 @@ class UE():
             self.df = pd.read_csv(fileanme)
         elif fileanme =='db':
             query = f"SELECT {data_cols} FROM {table_name}"
+            print(query)
             self.data_cols = data_cols
             con = sqlite3.connect(fileanme)
             self.df = pd.read_sql_query(query, con)
