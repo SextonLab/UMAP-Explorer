@@ -23,7 +23,7 @@ import seaborn as sns
 
 class UE():
     def __init__(self):
-        self.df = pd.DataFrame
+        self.df = pd.DataFrame()
         self.data_cols = "*"
         self.embedder = None
         self.cluster_labes = None
