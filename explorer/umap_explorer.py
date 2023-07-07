@@ -55,6 +55,9 @@ class UE():
             for c in self.data_cols:
                 print(c)
     
+    def join_meta(self, meta, left_on=[], right_on=[]):
+        print('joining metadata')
+
     def export(self, filename:str):
         if filename.endswith('csv'):
             filename = filename+".csv"
