@@ -46,13 +46,14 @@ class UE():
             self.df = pd.read_excel(filename, sheet_name=sheet_name)
             
     def get_data_columns(self, print_cols=False, dtype:str="float64", extra=[]):
-        pattern = "ImageNumber|Location|Center|Execution_Time|Parent|Child|Metadata"
+        pattern = "ImageNumber|Location|Center|ExecutionTime|Parent|Child|Metadata|Scaling"
         if len(extra) > 0:
             pattern+= "|".join(extra)
         meta_cols = self.df.columns[self.df.columns.str.contains(pat=pattern, flags=re.IGNORECASE)].tolist()
         self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
         if print_cols:
-            print(self.data_cols)
+            for c in self.data_cols:
+                print(c)
     
     def export(self, filename:str):
         if filename.endswith('csv'):
@@ -72,6 +73,7 @@ class UE():
             a=a, b=b,
             random_state=69
             )
+        self.df.fillna(value=self.df.mean(), inplace=True)
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
         self.df[['x','y']] = self.embedder.fit_transform(scaled)
         
