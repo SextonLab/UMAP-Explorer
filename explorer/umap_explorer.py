@@ -29,14 +29,14 @@ class UE():
         self.cluster_labes = None
         self.model = xgb.XGBRegressor()
     
-    def load_data(self, fileanme, filetype='csv', data_cols = "*", tablen_name='Per_Image', sheet_name='Sheet1'):
+    def load_data(self, fileanme, filetype='csv', data_cols = "*", table_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
         if filetype not in filetypes:
             raise ValueError("Invalid file type. Expected one of: %s" % filetypes)
         if filetype=='csv':
             self.df = pd.read_csv(fileanme)
         elif fileanme =='db':
-            query = f"SELECT {data_cols} FROM {tablen_name}"
+            query = f"SELECT {data_cols} FROM {table_name}"
             self.data_cols = data_cols
             con = sqlite3.connect(fileanme)
             self.df = pd.read_sql_query(query, con)
@@ -44,7 +44,7 @@ class UE():
         elif fileanme == 'excel':
             self.df = pd.read_excel(fileanme, sheet_name=sheet_name)
             
-    def get_data_columns(self, print_cols=False, dtype:str="float64", extra=list):
+    def get_data_columns(self, print_cols=False, dtype:str="float64", extra=[]):
         pattern = "ImageNumber|Location|Center|Execution_Time|Parent|Child|Metadata"
         if len(extra) > 0:
             pattern+= "|".join(extra)
