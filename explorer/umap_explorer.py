@@ -23,7 +23,7 @@ import seaborn as sns
 
 class UE():
     def __init__(self):
-        self.df = pd.DataFrame()
+        self.df = None
         self.data_cols = "*"
         self.embedder = None
         self.cluster_labes = None
@@ -35,7 +35,7 @@ class UE():
             raise ValueError("Invalid file type. Expected one of: %s" % filetypes)
         if filetype=='csv':
             self.df = pd.read_csv(filename)
-        elif filename =='db':
+        elif filetype =='db':
             query = f"SELECT {data_cols} FROM {table_name}"
             print(query)
             self.data_cols = data_cols
