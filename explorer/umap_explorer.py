@@ -29,6 +29,12 @@ class UE():
         self.cluster_labes = None
         self.model = xgb.XGBRegressor()
     
+    def view_tables(self, dbfile):
+        con = sqlite3.connect(dbfile)
+        cursor = con.cursor()
+        cursor.execute('SELECT name FROM sqlite_master WHERE type="table";')
+        print(cursor.fetchall())
+
     def load_data(self, filename, filetype='csv', data_cols = "*", table_name='Per_Image', sheet_name='Sheet1'):
         filetypes = ['csv', 'db', 'excel', 'DRUG TREATMENT JOIN']
         if filetype not in filetypes:
