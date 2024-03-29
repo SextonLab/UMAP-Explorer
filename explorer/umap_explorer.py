@@ -106,7 +106,7 @@ class UE():
     def shape(self):
         return self.df.shape
     
-    def cluster(self, type='leiden', min_clusters=5):
+    def cluster(self, type='leiden', min_clusters=5, **kwargs):
         types = ['hdbscan', 'leiden']
         if type not in types:
             raise ValueError("Invaild cluster type, Expected one of: %s" % types)
@@ -120,7 +120,7 @@ class UE():
             data = self.df[['x','y']].values
             dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
-            partition = la.find_partition(graph, la.ModularityVertexPartition)
+            partition = la.find_partition(graph, la.ModularityVertexPartition, **kwargs)
             self.df['cluster'] = partition.membership
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
