@@ -123,7 +123,7 @@ class UE():
             if resolution_parameter is None:
                  partition = la.find_partition(graph, la.ModularityVertexPartition, )
             else:
-                partition = la.find_partition(graph, la.ModularityVertexPartition, resolution_parameter=resolution_parameter)
+                partition = la.find_partition(graph, la.ModularityVertexPartition(resolution_parameter=resolution_parameter))
             self.df['cluster'] = partition.membership
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
