@@ -132,6 +132,8 @@ Applies either hdbscan or leiden clustering to the UMAP's xy-coordinates
 - type - default: "leiden"
 - *Optional*: min_clusters - default:5
     - min_cluster_size for hdbscan
+- *Optional*: resolution_parameter - default:None
+    - Reduces resolution of multiple leiden clusters (values <1, e.g. 0.05)
 
 ### `gen_model`
 
