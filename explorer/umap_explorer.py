@@ -72,7 +72,7 @@ class UE():
     
     def export_db(self, db, tablename, if_exist='fail'):
         con = sqlite3.connect(db)
-        self.df.to_sql(tablename, self.df, con=con, if_exists=if_exist,)
+        self.df.to_sql(tablename,  con=con, if_exists=if_exist,)
         con.close()
     
     def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='euclidean'):
