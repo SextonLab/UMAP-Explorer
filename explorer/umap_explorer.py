@@ -12,6 +12,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 
 import umap
 import xgboost as xgb
+import shap
 
 import hdbscan
 
@@ -83,7 +84,7 @@ class UE():
             a=a, b=b,
             random_state=69
             )
-        self.df.fillna(value=self.df.mean(), inplace=True)
+        self.df[self.data_cols].fillna(value=self.df[self.data_cols].mean(), inplace=True)
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
         self.df[['x','y']] = self.embedder.fit_transform(scaled)
         
@@ -158,3 +159,21 @@ class UE():
         # maybe put something here to accept or change cluster
         scaled = scaler.fit_transform(self.df[self.data_cols])
         self.df['score'] = self.model.predict(scaled)
+    
+    def get_shaps(self, cluster_1, cluster_2, max_display=10):
+        # get shap top features
+        # need teh clusters to get the same data as before
+        explainer = shap.TreeExplainer(self.model)
+        dt = self.df.loc[self.df['cluster'].isin(cluster_1+cluster_2)]
+        shap_values = explainer.shap_values(dt[self.data_cols])
+        shap.summary_plot(shap_values, dt[self.data_cols], max_display=max_display)
+    
+    def cluster_violins(self, column, savefig=False, fname=None, hue=None):
+        plt.clf()
+        ax = sns.violinplot(data=self.df, x='cluster', y=column, hue=hue, split=True)
+        if hue != None:
+            sns.move_legend(ax, 'upper left',  bbox_to_anchor=(1, 1))
+        if savefig:
+            if fname == None:
+                fname = f"clustre_{column}.png"'cluster'
+            plt.savefig(fname, format='png', bbox_inches='tight')
