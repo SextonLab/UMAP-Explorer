@@ -65,6 +65,7 @@ class UE():
     
     def join_meta(self, meta, left_on=[], right_on=[]):
         print('joining metadata')
+        self.df = pd.merge(self.df, meta, left_on=left_on, right_on=right_on, how='left')
 
     def export(self, filename:str):
         if filename.endswith('csv'):
