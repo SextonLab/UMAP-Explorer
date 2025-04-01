@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, silhouette_score
+from sklearn.cluster import KMeans
 
 import umap
 import xgboost as xgb
@@ -108,17 +109,17 @@ class UE():
     def shape(self):
         return self.df.shape
     
-    def cluster(self, type='leiden', min_clusters=5, resolution_parameter=None):
-        types = ['hdbscan', 'leiden']
-        if type not in types:
+    def cluster(self, cluster_type='leiden', min_clusters=5, resolution_parameter=None):
+        types = ['hdbscan', 'leiden', 'kmeans']
+        if cluster_type not in types:
             raise ValueError("Invaild cluster type, Expected one of: %s" % types)
-        if type == 'hdbscan':
+        if cluster_type == 'hdbscan':
             cluster_algo = hdbscan.HDBSCAN(min_cluster_size=min_clusters, gen_min_span_tree=True)
             cluster_algo.fit(self.df[['umap_1','umap_2']])
             self.df['cluster'] = cluster_algo.labels_
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
-        elif type == 'leiden':
+        elif cluster_type == 'leiden':
             data = self.df[['umap_1','umap_2']].values
             dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
@@ -129,8 +130,16 @@ class UE():
             self.df['cluster'] = partition.membership
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
+        elif cluster_type == 'kmeans':
+            data = self.df[['umap_1', 'umap_2']].values
+            kmeans = KMeans(n_clusters=min_clusters, random_state=42)
+            self.df['cluster'] = kmeans.fit_transform(data)
+            
         silhoute = silhouette_score(self.df[['umap_1', 'umap_2']], self.df['cluster'])
         print(f"Cluster Silhoutte Score: {silhoute}")
+        print("Best value is 1, 0 indicates overlapping clusters, Negative values indicates poorly assigned clusters")
+        print()
+        
     
     def gen_model(self, cluster_1, cluster_2):
         # convert to list if single cluster ids
