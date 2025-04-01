@@ -8,7 +8,7 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.metrics import r2_score, mean_squared_error, silhouette_score
 
 import umap
 import xgboost as xgb
@@ -87,7 +87,7 @@ class UE():
             )
         self.df[self.data_cols].fillna(value=self.df[self.data_cols].mean(), inplace=True)
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
-        self.df[['x','y']] = self.embedder.fit_transform(scaled)
+        self.df[['umap_1','umap_2']] = self.embedder.fit_transform(scaled)
         
     def plot(self, x='x', y='y', color_on='cond', save=None, fname='my_plot'):
         ftypes = [None, 'svg', 'png']
@@ -114,12 +114,12 @@ class UE():
             raise ValueError("Invaild cluster type, Expected one of: %s" % types)
         if type == 'hdbscan':
             cluster_algo = hdbscan.HDBSCAN(min_cluster_size=min_clusters, gen_min_span_tree=True)
-            cluster_algo.fit(self.df[['x','y']])
+            cluster_algo.fit(self.df[['umap_1','umap_2']])
             self.df['cluster'] = cluster_algo.labels_
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
         elif type == 'leiden':
-            data = self.df[['x','y']].values
+            data = self.df[['umap_1','umap_2']].values
             dist_matrix = np.sqrt((data[:, 0, None] - data[:, 0])**2 + (data[:, 1, None] - data[:, 1])**2)
             graph = ig.Graph.Adjacency((dist_matrix < 1).tolist())
             if resolution_parameter is None:
@@ -129,6 +129,8 @@ class UE():
             self.df['cluster'] = partition.membership
             self.cluster_labels = self.df['cluster'].unique().tolist()
             self.cluster_labels.sort()
+        silhoute = silhouette_score(self.df[['umap_1', 'umap_2']], self.df['cluster'])
+        print(f"Cluster Silhoutte Score: {silhoute}")
     
     def gen_model(self, cluster_1, cluster_2):
         # convert to list if single cluster ids
