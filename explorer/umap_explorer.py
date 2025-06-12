@@ -23,6 +23,8 @@ import leidenalg as la
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from cluster_sampler import get_crops
+
 class UE():
     def __init__(self):
         self.df = None
@@ -189,3 +191,11 @@ class UE():
             if fname == None:
                 fname = f"clustre_{column}.png"'cluster'
             plt.savefig(fname, format='png', bbox_inches='tight')
+            
+    def get_cluster_imgs(self, img_dir, mask_dir, output_dir, diam_col, diam_val=100, obj_num_col='ObjectNumber',
+              well_col='Image_Metadata_WellID', field_col='Image_Metadata_Field',
+              chan1='C01', chan2='C02', chan3='C03', mask_chan='C01'):
+        get_crops(self.df, img_dir=img_dir, mask_dir=mask_dir, output_dir=output_dir, 
+                  dima_col=diam_col, diam_val=diam_val, obj_num_col=obj_num_col,
+              well_col=well_col, field_col=field_col,
+              chan1=chan1, chan2=chan2, chan3=chan3, mask_chan=mask_chan)
