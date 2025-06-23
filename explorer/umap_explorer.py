@@ -23,14 +23,14 @@ import leidenalg as la
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from cluster_sampler import get_crops
+from .find_clusters import get_crops
 
 class UE():
-    def __init__(self):
-        self.df = None
-        self.data_cols = "*"
-        self.embedder = None
-        self.cluster_labes = None
+    def __init__(self,df=None, data_cols="*", embedder=None, cluster_labels=None):
+        self.df = df
+        self.data_cols = data_cols
+        self.embedder = embedder
+        self.cluster_labes = cluster_labels
         self.model = xgb.XGBRegressor()
     
     def view_tables(self, dbfile):
@@ -92,12 +92,13 @@ class UE():
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
         self.df[['umap_1','umap_2']] = self.embedder.fit_transform(scaled)
         
-    def plot(self, x='x', y='y', color_on='cond', save=None, fname='my_plot'):
+    def plot(self, x='umap_1', y='umap_2', color_on='cond', save=None, fname='my_plot'):
         ftypes = [None, 'svg', 'png']
         if save not in ftypes:
             raise ValueError("Invalid file type. Expected one of: %s" % ftypes)
         ax = sns.scatterplot(data=self.df, x=x, y=y, hue=color_on)
-        sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+        if color_on is not None:
+            sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
         if save:
             if save == 'both':
                 plt.savefig(".".join((fname,'svg')), format='svg')

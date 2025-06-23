@@ -1,2 +1,2 @@
 from .umap_explorer import UE
-from .cluster_sampler import get_crops
+from .find_clusters import get_crops, sample_df
