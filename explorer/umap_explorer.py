@@ -193,10 +193,14 @@ class UE():
                 fname = f"clustre_{column}.png"'cluster'
             plt.savefig(fname, format='png', bbox_inches='tight')
             
-    def get_cluster_imgs(self, img_dir, mask_dir, output_dir, diam_col, diam_val=100, obj_num_col='ObjectNumber',
-              well_col='Image_Metadata_WellID', field_col='Image_Metadata_Field',
-              chan1='C01', chan2='C02', chan3='C03', mask_chan='C01'):
-        get_crops(self.df, img_dir=img_dir, mask_dir=mask_dir, output_dir=output_dir, 
-                  dima_col=diam_col, diam_val=diam_val, obj_num_col=obj_num_col,
-              well_col=well_col, field_col=field_col,
-              chan1=chan1, chan2=chan2, chan3=chan3, mask_chan=mask_chan)
+    def get_cluster_imgs(self, img_dir, output_dir,
+              chan1_col, chan2_col, chan3_col, n_sampels=5, bbox_col='Cell_AreaShape_BoundingBoxArea',
+              bbox_X_min='Cell_AreaShape_BoundingBoxMinimum_X', bbox_X_max='Cell_AreaShape_BoundingBoxMaximum_X', 
+              bbox_Y_min='Cell_AreaShape_BoundingBoxMinimum_Y', bbox_Y_max='Cell_AreaShape_BoundingBoxMaximum_Y'):
+        cluster_col = 'cluster'
+        bbox_area = self.df[bbox_col].mean()
+        get_crops(self.df, img_dir=img_dir, output_dir=output_dir, bbox_col=bbox_col, 
+                  chan1_col=chan1_col, chan2_col=chan2_col, chan3_col=chan3_col, n_sampels=n_sampels,
+                  cluster_col=cluster_col, bbox_area=bbox_area, 
+                  bbox_X_min=bbox_X_min, bbox_X_max=bbox_X_max, 
+                  bbox_Y_min=bbox_Y_min, bbox_Y_max=bbox_Y_max)

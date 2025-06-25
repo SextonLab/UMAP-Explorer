@@ -146,3 +146,42 @@ Generates an XGBoost Regressor model between 2 cluster groups
 - cluster_2
     - Single or list of cluster ids to use as "0.0" label
     - *Optional*: 'rest' this value uses all clusters **not** in cluster_1
+
+### `get_cluster_imgs`
+
+Gets representitive images from UMAP clusters. Note: only works if data has Bounding Box measurements (X/Y Min/Max and Area)
+
+**Parameters**
+
+- img_dir
+    - Directory where source images are
+- output_dir
+    - Destination for cell images
+- chan1_col
+    - Red channel images (often nuclei)
+- chan2_col
+    - Green channel images
+- chan3_col
+    - Blue channel images
+- n_sampels
+    - Number of samples from each cluster default: 5
+- bbox_col
+    - Bounding box area column default: `Cell_AreaShape_BoundingBoxArea`
+- bbox_X_min
+    - Lower X coordinate of cell bounding box default: `Cell_AreaShape_BoundingBoxMinimum_X`
+- bbox_X_max
+    - Upper X coordinate of cell bounding box default: `Cell_AreaShape_BoundingBoxMaximum_X`
+- bbox_Y_min
+    - Lower Y coordinate of cell bounding box default: `Cell_AreaShape_BoundingBoxMinimum_Y`
+- bbox_Y_max
+    - Upper Y coordinate of cell bounding box default: `Cell_AreaShape_BoundingBoxMaximum_Y`
+
+## Notebooks
+
+### `example.ipynb`
+
+Full workflow example
+
+### `cell_clips.ipynb`
+
+Example cluster cell images from existing dataframe with `cluster_id` and all measurement features
