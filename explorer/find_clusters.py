@@ -29,9 +29,9 @@ def get_crops(df, img_dir, output_dir, bbox_col,
     for ind, row in tqdm.tqdm(dt.iterrows()):
         cluster_id = row[cluster_col]
         
-        chan1 = io.imread(os.path.join(img_dir, row[chan1_col][0]))
-        chan2 = io.imread(os.path.join(img_dir, row[chan2_col][0]))
-        chan3 = io.imread(os.path.join(img_dir, row[chan3_col][0]))
+        chan1 = io.imread(os.path.join(img_dir, row[chan1_col]))
+        chan2 = io.imread(os.path.join(img_dir, row[chan2_col]))
+        chan3 = io.imread(os.path.join(img_dir, row[chan3_col]))
         
         xmin = int(row[bbox_X_min])
         xmax = int(row[bbox_X_max])
