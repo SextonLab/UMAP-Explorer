@@ -194,12 +194,12 @@ class UE():
             plt.savefig(fname, format='png', bbox_inches='tight')
             
     def get_cluster_imgs(self, img_dir, output_dir,
-              chan1_col, chan2_col, chan3_col, n_sampels=5, bbox_col='Cell_AreaShape_BoundingBoxArea',
+              chan1_col, chan2_col, chan3_col, n_sampels=5, bbox_col='Cell_AreaShape_BoundingBoxArea',bbox_area=100,
               bbox_X_min='Cell_AreaShape_BoundingBoxMinimum_X', bbox_X_max='Cell_AreaShape_BoundingBoxMaximum_X', 
               bbox_Y_min='Cell_AreaShape_BoundingBoxMinimum_Y', bbox_Y_max='Cell_AreaShape_BoundingBoxMaximum_Y'):
         cluster_col = 'cluster'
         bbox_area = self.df[bbox_col].mean()
-        get_crops(self.df, img_dir=img_dir, output_dir=output_dir, bbox_col=bbox_col, 
+        get_crops(self.df, img_dir=img_dir, output_dir=output_dir, bbox_col=bbox_col, bbox_area=bbox_area,
                   chan1_col=chan1_col, chan2_col=chan2_col, chan3_col=chan3_col, n_sampels=n_sampels,
                   cluster_col=cluster_col, bbox_area=bbox_area, 
                   bbox_X_min=bbox_X_min, bbox_X_max=bbox_X_max, 
