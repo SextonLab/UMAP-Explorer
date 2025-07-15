@@ -12,7 +12,7 @@ if os.name =='nt':
 
 setup(
     name='umapexplore',
-    version='0.01',
+    version='0.12',
     description='Set of tools and notebooks for UMAP exploration',
     long_description=readme(),
     classifiers=[

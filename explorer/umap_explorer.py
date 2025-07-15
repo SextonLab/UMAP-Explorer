@@ -137,7 +137,7 @@ class UE():
             data = self.df[['umap_1', 'umap_2']].values
             kmeans = KMeans(n_clusters=min_clusters, random_state=42)
             self.df['cluster'] = kmeans.fit_transform(data)
-            
+        self.df['cluster_id'] = "cluster_" +str(self.df['cluster'])
         silhoute = silhouette_score(self.df[['umap_1', 'umap_2']], self.df['cluster'])
         print(f"Cluster Silhoutte Score: {silhoute}")
         print("Best value is 1, 0 indicates overlapping clusters, Negative values indicates poorly assigned clusters")
