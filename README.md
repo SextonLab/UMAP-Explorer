@@ -14,15 +14,12 @@ UMAP-Explorer is a comprehensive tool designed for high-dimensional cell morphol
 ## Installation
 
 ```
-git clone git@github.com:SextonLab/UMAP-Explorer.git
+git clone https://github.com/SextonLab/UMAP-Explorer.git
 
 cd UMAP-Explorer
 
 pip install -e .
 ```
-
-### Optional install directly from GitHub
-`pip install git+https://github.com/yourusername/UMAP-Explorer.git`
 
 ## Running
 
