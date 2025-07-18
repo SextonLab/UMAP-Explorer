@@ -201,6 +201,6 @@ class UE():
         bbox_area = self.df[bbox_col].mean()
         get_crops(self.df, img_dir=img_dir, output_dir=output_dir, bbox_col=bbox_col, bbox_area=bbox_area,
                   chan1_col=chan1_col, chan2_col=chan2_col, chan3_col=chan3_col, n_sampels=n_sampels,
-                  cluster_col=cluster_col, bbox_area=bbox_area, 
+                  cluster_col=cluster_col, 
                   bbox_X_min=bbox_X_min, bbox_X_max=bbox_X_max, 
                   bbox_Y_min=bbox_Y_min, bbox_Y_max=bbox_Y_max)
