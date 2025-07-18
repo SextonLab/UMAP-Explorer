@@ -18,6 +18,8 @@ git clone https://github.com/SextonLab/UMAP-Explorer.git
 
 cd UMAP-Explorer
 
+pip install -r requirements.txt
+
 pip install -e .
 ```
 

@@ -1,0 +1,12 @@
+pandas
+numpy
+scikit-learn
+umap-learn
+xgboost
+shap
+hdbscan
+igraph
+leidenalg
+matplotlib
+seaborn
+tqdm
