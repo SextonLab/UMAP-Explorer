@@ -59,7 +59,7 @@ class UE():
     def get_data_columns(self, print_cols=False, dtype:str="float64", extra=[]):
         pattern = "ImageNumber|Location|Center|ExecutionTime|Parent|Child|Metadata|Scaling"
         if len(extra) > 0:
-            pattern+= "|".join(extra)
+            pattern+= "|"+"|".join(extra)
         meta_cols = self.df.columns[self.df.columns.str.contains(pat=pattern, flags=re.IGNORECASE)].tolist()
         self.data_cols = self.df.drop(columns=meta_cols).select_dtypes(include=dtype).columns.tolist()
         if print_cols:
@@ -80,7 +80,8 @@ class UE():
         self.df.to_sql(tablename,  con=con, if_exists=if_exist,)
         con.close()
     
-    def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='euclidean'):
+    def embed(self, a=None, b=None, n_neighbors=15, min_dist=0.1, metric='euclidean',fill_on='mean'):
+        assert fill_on in ['mean', 'zero'], "Fill type not found use either mean or zero"
         self.embedder = umap.UMAP(
             n_neighbors=n_neighbors,
             metric=metric,
@@ -88,9 +89,16 @@ class UE():
             a=a, b=b,
             random_state=69
             )
-        self.df[self.data_cols].fillna(value=self.df[self.data_cols].mean(), inplace=True)
+        if fill_on == 'mean':
+            self.df[self.data_cols] = self.df[self.data_cols].fillna(value=self.df[self.data_cols].mean())
+        elif fill_on == 'zero':
+            self.df[self.data_cols] = self.df[self.data_cols].fillna(value=0)
+        else:
+            print('do nothing')
         scaled = StandardScaler().fit_transform(self.df[self.data_cols])
-        self.df[['umap_1','umap_2']] = self.embedder.fit_transform(scaled)
+        locs = self.embedder.fit_transform(scaled)
+        self.df['umap_1'] = locs[:,0]
+        self.df['umap_2'] = locs[:,1]
         
     def plot(self, x='umap_1', y='umap_2', color_on='cond', save=None, fname='my_plot'):
         ftypes = [None, 'svg', 'png', 'both']
